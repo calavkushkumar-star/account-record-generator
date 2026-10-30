@@ -8,7 +8,7 @@
 @media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}}
 @page{size:A4 landscape;margin:0}
 @media print{
- body{background:white}.wrap>*:not(#printArea){display:none!important}#printArea{display:block!important;position:fixed;right:8mm;top:8mm;width:105mm;max-height:190mm;overflow:hidden;font:10pt Arial,sans-serif;color:#111}.print-title{font-size:12pt;font-weight:bold;margin:0 0 8px}.print-row{display:grid;grid-template-columns:38mm 1fr;gap:3mm;padding:3px 0;border-bottom:.25px solid #bbb;overflow-wrap:anywhere}.print-label{font-weight:bold}
+ body{background:white}.wrap>*:not(#printArea){display:none!important}#printArea{display:block!important;position:fixed;right:13mm;top:9mm;width:185mm;max-height:185mm;overflow:hidden;font:10pt Arial,sans-serif;color:#111;padding:0 2mm}.print-top{display:grid;grid-template-columns:1fr 1fr;min-height:26mm}.print-left{padding-left:8mm}.print-right{text-align:center}.print-branch{margin:2mm 0 2mm 0}.print-branch-address{margin:2mm 0;max-width:90mm}.print-type{margin-top:8mm}.print-pair{display:flex;gap:8mm;margin:2mm 0 2mm 52mm;min-height:5mm}.print-label{font-weight:400}.print-account{margin:7mm 0 5mm 16mm;min-height:5mm}.print-details{margin:0 0 7mm 70mm;line-height:1.7}.print-address{margin:0 0 6mm 25mm;max-width:130mm;line-height:1.6}.print-date{margin-left:27mm;margin-top:5mm}
 }
 </style></head>
 <body><main class="wrap">
@@ -21,9 +21,14 @@
 <div class="field"><label>Account number</label><input id="account" maxlength="40" inputmode="numeric"></div>
 <div class="field"><label>IFSC / Routing code</label><input id="ifsc" maxlength="30"></div>
 <div class="field"><label>Branch</label><input id="branch" maxlength="100"></div>
+<div class="field"><label>Branch address</label><input id="branchAddress" maxlength="180"></div>
 <div class="field"><label>Account type</label><select id="type"><option value="">Select</option><option>Savings</option><option>Current</option><option>Other</option></select></div>
+<div class="field"><label>Customer ID</label><input id="customerId" maxlength="40"></div>
+<div class="field"><label>Father / Husband name</label><input id="relationName" maxlength="100"></div>
+<div class="field"><label>Identity number (optional)</label><input id="identityNo" maxlength="40"></div>
 <div class="field"><label>Mobile number</label><input id="mobile" maxlength="20" inputmode="tel"></div>
 <div class="field"><label>Address</label><input id="address" maxlength="250"></div>
+<div class="field"><label>Record date</label><input id="recordDate" type="date"></div>
 </div><div class="actions"><button type="submit">Save record</button><button type="button" id="clearBtn" class="secondary">Clear form</button></div><div id="saveMsg" class="status"></div><input id="recordId" type="hidden"></form></div>
 <div class="panel"><h2>Saved records</h2><div id="records"><div class="muted">No records yet.</div></div></div>
 </section><section id="printArea" class="print-area"></section>
@@ -35,7 +40,7 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["holder","bank","account","ifsc","branch","type","mobile","address"];
+const fields=["holder","bank","account","ifsc","branch","branchAddress","type","customerId","relationName","identityNo","mobile","address","recordDate"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
 function formData(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}
 function fillForm(r={},id=""){fields.forEach(k=>$(k).value=r[k]||"");$("recordId").value=id;}
@@ -47,5 +52,23 @@ $("logoutBtn").onclick=()=>signOut(auth);
 onAuthStateChanged(auth,async user=>{currentUser=user;$("authPanel").classList.toggle("hidden",!!user);$("appPanel").classList.toggle("hidden",!user);$("logoutBtn").classList.toggle("hidden",!user);if(user){try{await loadRecords();}catch(e){message("saveMsg","Could not load records. Check Firestore rules and database setup.",true);}}});
 $("recordForm").onsubmit=async e=>{e.preventDefault();if(!currentUser)return;const data=formData();try{const id=$("recordId").value;if(id)await updateDoc(doc(db,"users",currentUser.uid,"records",id),data);else await addDoc(collection(db,"users",currentUser.uid,"records"),{...data,createdAt:serverTimestamp()});fillForm();message("saveMsg","Record saved.");await loadRecords();}catch(err){message("saveMsg",err.message,true);}};
 $("clearBtn").onclick=()=>{fillForm();message("saveMsg","");};
-function printRecord(r){const area=$("printArea");area.replaceChildren();const title=document.createElement("div");title.className="print-title";title.textContent="Account Information";area.append(title);const labels={holder:"Account holder",bank:"Bank / Institution",account:"Account number",ifsc:"IFSC / Code",branch:"Branch",type:"Account type",mobile:"Mobile",address:"Address"};fields.forEach(k=>{if(!r[k])return;const line=document.createElement("div");line.className="print-row";const l=document.createElement("div");l.className="print-label";l.textContent=labels[k];const v=document.createElement("div");v.textContent=r[k];line.append(l,v);area.append(line);});window.print();}
-</script></body></html>
+function printRecord(r){
+ const area=$("printArea");area.replaceChildren();
+ const put=(cls,txt)=>{if(!txt)return;const el=document.createElement("div");el.className=cls;el.textContent=txt;area.append(el);};
+ const pair=(label,value)=>{if(!value)return;const line=document.createElement("div");line.className="print-pair";const a=document.createElement("span");a.className="print-label";a.textContent=label;const b=document.createElement("span");b.textContent=value;line.append(a,b);area.append(line);};
+ const top=document.createElement("div");top.className="print-top";
+ const left=document.createElement("div");left.className="print-left";
+ const right=document.createElement("div");right.className="print-right";
+ const add=(parent,cls,txt)=>{if(!txt)return;const el=document.createElement("div");el.className=cls;el.textContent=txt;parent.append(el);};
+ add(left,"print-branch",r.branch);add(left,"print-branch-address",r.branchAddress);
+ add(right,"print-country","");add(right,"print-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
+ top.append(left,right);area.append(top);
+ pair("Institution",r.bank);pair("IFSC Code",r.ifsc);
+ put("print-account",r.account);
+ pair("Account holder",r.holder);
+ const details=document.createElement("div");details.className="print-details";
+ const detail=(label,value)=>{if(!value)return;const line=document.createElement("div");line.textContent=label+": "+value;details.append(line);};
+ detail("Customer ID",r.customerId);detail("C/O / Father / Husband",r.relationName);detail("Identity No.",r.identityNo);area.append(details);
+ put("print-address",r.address);put("print-date",r.recordDate?new Date(r.recordDate+"T00:00:00").toLocaleDateString("en-GB"):"");
+ window.print();
+}>
