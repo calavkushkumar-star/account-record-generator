@@ -8,7 +8,12 @@
 @media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}}
 @page{size:A4 landscape;margin:0}
 @media print{
- body{background:white}.wrap>*:not(#printArea){display:none!important}#printArea{display:block!important;position:fixed;right:13mm;top:9mm;width:185mm;max-height:185mm;overflow:hidden;font:10pt Arial,sans-serif;color:#111;padding:0 2mm}.print-top{display:grid;grid-template-columns:1fr 1fr;min-height:26mm}.print-left{padding-left:8mm}.print-right{text-align:center}.print-branch{margin:2mm 0 2mm 0}.print-branch-address{margin:2mm 0;max-width:90mm}.print-type{margin-top:8mm}.print-pair{display:flex;gap:8mm;margin:2mm 0 2mm 52mm;min-height:5mm}.print-label{font-weight:400}.print-account{margin:7mm 0 5mm 16mm;min-height:5mm}.print-details{margin:0 0 7mm 70mm;line-height:1.7}.print-address{margin:0 0 6mm 25mm;max-width:130mm;line-height:1.6}.print-date{margin-left:27mm;margin-top:5mm}
+ body{background:white}.wrap>*:not(#printArea){display:none!important}
+ #printArea{display:block!important;position:fixed;right:13mm;top:9mm;width:185mm;height:95mm;max-height:95mm;overflow:hidden;font:10pt Arial,sans-serif;color:#111;padding:0 2mm}
+ .print-layout{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(7,auto);column-gap:10mm;row-gap:4mm;align-items:start}
+ .p-left{grid-column:1}.p-right{grid-column:2;text-align:left}
+ .p-branch,.p-issue{grid-row:1}.p-branch-address,.p-serial{grid-row:2}.p-phone,.p-location{grid-row:3}.p-ifsc,.p-account{grid-row:4}.p-type,.p-holder{grid-row:5}.p-occupation,.p-address{grid-row:6}.p-opening,.p-nomination{grid-row:7}
+ .p-value{line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
 }
 </style></head>
 <body><main class="wrap">
@@ -61,30 +66,23 @@ $("recordForm").onsubmit=async e=>{e.preventDefault();if(!currentUser)return;con
 $("clearBtn").onclick=()=>{fillForm();message("saveMsg","");};
 function printRecord(r){
  const area=$("printArea");area.replaceChildren();
- const put=(cls,txt)=>{if(!txt)return;const el=document.createElement("div");el.className=cls;el.textContent=txt;area.append(el);};
- const pair=(label,value)=>{if(!value)return;const line=document.createElement("div");line.className="print-pair";const a=document.createElement("span");a.className="print-label";a.textContent=label;const b=document.createElement("span");b.textContent=value;line.append(a,b);area.append(line);};
- const top=document.createElement("div");top.className="print-top";
- const left=document.createElement("div");left.className="print-left";
- const right=document.createElement("div");right.className="print-right";
- const add=(parent,cls,txt)=>{if(!txt)return;const el=document.createElement("div");el.className=cls;el.textContent=txt;parent.append(el);};
- add(left,"print-branch",r.branch);add(left,"print-branch-address",r.branchAddress);
- add(right,"print-issue","Issue date: "+(r.issueDate?new Date(r.issueDate+"T00:00:00").toLocaleDateString("en-GB"):""));
- add(right,"print-serial",r.serialNo?"Sr No: "+r.serialNo:"");
- add(right,"print-country",[r.state,r.country].filter(Boolean).join("   "));
- add(right,"print-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
- top.append(left,right);area.append(top);
- pair("Branch Phone No.",r.branchPhone);
- pair("IFSC Code",r.ifsc);
- put("print-account",r.account);
- pair("Account holder",r.holder);
- const details=document.createElement("div");details.className="print-details";
- const detail=(label,value)=>{if(!value)return;const line=document.createElement("div");line.textContent=label+": "+value;details.append(line);};
- detail("Customer ID",r.customerId);detail("C/O / Father / Husband",r.relationName);detail("Identity No.",r.identityNo);area.append(details);
- pair("Occupation",r.occupation);
- put("print-address",r.address);
- pair("Date of Opening A/c",r.openingDate?new Date(r.openingDate+"T00:00:00").toLocaleDateString("en-GB"):"");
- pair("Nomination Registered",r.nomination);
- put("print-date",r.recordDate?new Date(r.recordDate+"T00:00:00").toLocaleDateString("en-GB"):"");
- window.print();
+ const layout=document.createElement("div");layout.className="print-layout";
+ const add=(cls,value)=>{if(!value)return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
+ const date=v=>v?new Date(v+"T00:00:00").toLocaleDateString("en-GB"):"";
+ add("p-left p-branch",r.branch);
+ add("p-right p-issue",date(r.issueDate));
+ add("p-left p-branch-address",r.branchAddress);
+ add("p-right p-serial",r.serialNo);
+ add("p-left p-phone",r.branchPhone);
+ add("p-right p-location",[r.state,r.country].filter(Boolean).join("   "));
+ add("p-left p-ifsc",r.ifsc);
+ add("p-right p-account",r.account);
+ add("p-left p-type",r.type);
+ add("p-right p-holder",r.holder);
+ add("p-left p-occupation",r.occupation);
+ add("p-right p-address",r.address);
+ add("p-left p-opening",date(r.openingDate));
+ add("p-right p-nomination",r.nomination);
+ area.append(layout);window.print();
 }
 </script></body></html>
