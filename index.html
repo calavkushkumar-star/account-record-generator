@@ -8,12 +8,17 @@
 @media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}}
 @page{size:A4 landscape;margin:0}
 @media print{
- body{background:white}.wrap>*:not(#printArea){display:none!important}
- #printArea{display:block!important;position:fixed;right:13mm;top:9mm;width:185mm;height:95mm;max-height:95mm;overflow:hidden;font:10pt Arial,sans-serif;color:#111;padding:0 2mm}
- .print-layout{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(7,auto);column-gap:10mm;row-gap:4mm;align-items:start}
- .p-left{grid-column:1}.p-right{grid-column:2;text-align:left}
- .p-branch,.p-issue{grid-row:1}.p-branch-address,.p-serial{grid-row:2}.p-phone,.p-location{grid-row:3}.p-ifsc,.p-account{grid-row:4}.p-type,.p-holder{grid-row:5}.p-occupation,.p-address{grid-row:6}.p-opening,.p-nomination{grid-row:7}
- .p-value{line-height:1.45;overflow-wrap:anywhere;white-space:pre-wrap}
+ body{background:#fff}.wrap>*:not(#printArea){display:none!important}
+ #printArea{display:block!important;position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden;color:#111;font:10pt Arial,sans-serif}
+ .print-layout{position:relative;width:185mm;height:84mm;margin:8mm auto 0}
+ .p-value{position:absolute;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+ .p-branch{left:8mm;top:0}.p-branch-address{left:29mm;top:5mm;width:65mm}
+ .p-phone{left:65mm;top:17mm}.p-ifsc{left:66mm;top:22mm}
+ .p-country{right:3mm;top:-2mm}.p-state{right:34mm;top:7mm}
+ .p-type{right:3mm;top:17mm}.p-account{left:14mm;top:32mm}
+ .p-holder{left:2mm;top:41mm}.p-customer{left:65mm;top:45mm}
+ .p-relation{left:65mm;top:50mm}.p-identity{left:65mm;top:56mm}
+ .p-address{left:16mm;top:66mm;width:120mm}.p-date{left:18mm;top:81mm}
 }
 </style></head>
 <body><main class="wrap">
@@ -21,6 +26,7 @@
 <section id="authPanel" class="panel"><h2>Login / Create account</h2><div class="grid"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div></div><div class="actions"><button id="loginBtn">Login</button><button id="signupBtn" class="secondary">Create account</button></div><div id="authMsg" class="status"></div></section>
 <section id="appPanel" class="hidden">
 <div class="panel"><h2>Enter account details</h2><form id="recordForm"><div class="grid">
+<div class="field"><label>Title</label><select id="title"><option value="">None</option><option>MR</option><option>MRS</option><option>MS</option></select></div>
 <div class="field"><label>Account holder name</label><input id="holder" required maxlength="100"></div>
 <div class="field"><label>Account number</label><input id="account" maxlength="40" inputmode="numeric"></div>
 <div class="field"><label>IFSC / Routing code</label><input id="ifsc" maxlength="30"></div>
@@ -52,7 +58,7 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate"];
+const fields=["title","holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
 function formData(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}
 function fillForm(r={},id=""){fields.forEach(k=>$(k).value=r[k]||"");$("recordId").value=id;}
@@ -69,20 +75,20 @@ function printRecord(r){
  const layout=document.createElement("div");layout.className="print-layout";
  const add=(cls,value)=>{if(!value)return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
  const date=v=>v?new Date(v+"T00:00:00").toLocaleDateString("en-GB"):"";
- add("p-left p-branch",r.branch);
- add("p-right p-issue",date(r.issueDate));
- add("p-left p-branch-address",r.branchAddress);
- add("p-right p-serial",r.serialNo);
- add("p-left p-phone",r.branchPhone);
- add("p-right p-location",[r.state,r.country].filter(Boolean).join("   "));
- add("p-left p-ifsc",r.ifsc);
- add("p-right p-account",r.account);
- add("p-left p-type",r.type);
- add("p-right p-holder",r.holder);
- add("p-left p-occupation",r.occupation);
- add("p-right p-address",r.address);
- add("p-left p-opening",date(r.openingDate));
- add("p-right p-nomination",r.nomination);
+ add("p-branch",r.branch);
+ add("p-branch-address",r.branchAddress);
+ add("p-phone",r.branchPhone);
+ add("p-ifsc",r.ifsc);
+ add("p-country",r.country);
+ add("p-state",r.state);
+ add("p-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
+ add("p-account",r.account);
+ add("p-holder",(r.title?r.title+"   ":"")+r.holder);
+ add("p-customer",r.customerId?"Customer ID: "+r.customerId:"");
+ add("p-relation",r.relationName?"C/D/W/H/O: "+r.relationName:"");
+ add("p-identity",r.identityNo?"Identity No: "+r.identityNo:"");
+ add("p-address",r.address);
+ add("p-date",date(r.recordDate));
  area.append(layout);window.print();
 }
 </script></body></html>
