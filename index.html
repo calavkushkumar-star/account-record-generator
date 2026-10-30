@@ -21,12 +21,20 @@
 <div class="field"><label>IFSC / Routing code</label><input id="ifsc" maxlength="30"></div>
 <div class="field"><label>Branch</label><input id="branch" maxlength="100"></div>
 <div class="field"><label>Branch address</label><input id="branchAddress" maxlength="180"></div>
+<div class="field"><label>Branch Phone No.</label><input id="branchPhone" maxlength="30"></div>
+<div class="field"><label>Issue Date</label><input id="issueDate" type="date"></div>
+<div class="field"><label>Serial No.</label><input id="serialNo" maxlength="30"></div>
+<div class="field"><label>State</label><input id="state" maxlength="60"></div>
+<div class="field"><label>Country</label><input id="country" maxlength="60" value="India"></div>
 <div class="field"><label>Account type</label><select id="type"><option value="">Select</option><option>Savings</option><option>Current</option><option>Other</option></select></div>
 <div class="field"><label>Customer ID</label><input id="customerId" maxlength="40"></div>
 <div class="field"><label>Father / Husband name</label><input id="relationName" maxlength="100"></div>
 <div class="field"><label>Identity number (optional)</label><input id="identityNo" maxlength="40"></div>
 <div class="field"><label>Mobile number</label><input id="mobile" maxlength="20" inputmode="tel"></div>
+<div class="field"><label>Occupation</label><input id="occupation" maxlength="100"></div>
 <div class="field"><label>Address</label><input id="address" maxlength="250"></div>
+<div class="field"><label>Date of Opening A/c</label><input id="openingDate" type="date"></div>
+<div class="field"><label>Nomination Registered</label><select id="nomination"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
 <div class="field"><label>Record date</label><input id="recordDate" type="date"></div>
 </div><div class="actions"><button type="submit">Save record</button><button type="button" id="clearBtn" class="secondary">Clear form</button></div><div id="saveMsg" class="status"></div><input id="recordId" type="hidden"></form></div>
 <div class="panel"><h2>Saved records</h2><div id="records"><div class="muted">No records yet.</div></div></div>
@@ -39,7 +47,7 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["holder","account","ifsc","branch","branchAddress","type","customerId","relationName","identityNo","mobile","address","recordDate"];
+const fields=["holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
 function formData(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}
 function fillForm(r={},id=""){fields.forEach(k=>$(k).value=r[k]||"");$("recordId").value=id;}
@@ -60,15 +68,23 @@ function printRecord(r){
  const right=document.createElement("div");right.className="print-right";
  const add=(parent,cls,txt)=>{if(!txt)return;const el=document.createElement("div");el.className=cls;el.textContent=txt;parent.append(el);};
  add(left,"print-branch",r.branch);add(left,"print-branch-address",r.branchAddress);
- add(right,"print-country","");add(right,"print-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
+ add(right,"print-issue","Issue date: "+(r.issueDate?new Date(r.issueDate+"T00:00:00").toLocaleDateString("en-GB"):""));
+ add(right,"print-serial",r.serialNo?"Sr No: "+r.serialNo:"");
+ add(right,"print-country",[r.state,r.country].filter(Boolean).join("   "));
+ add(right,"print-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
  top.append(left,right);area.append(top);
+ pair("Branch Phone No.",r.branchPhone);
  pair("IFSC Code",r.ifsc);
  put("print-account",r.account);
  pair("Account holder",r.holder);
  const details=document.createElement("div");details.className="print-details";
  const detail=(label,value)=>{if(!value)return;const line=document.createElement("div");line.textContent=label+": "+value;details.append(line);};
  detail("Customer ID",r.customerId);detail("C/O / Father / Husband",r.relationName);detail("Identity No.",r.identityNo);area.append(details);
- put("print-address",r.address);put("print-date",r.recordDate?new Date(r.recordDate+"T00:00:00").toLocaleDateString("en-GB"):"");
+ pair("Occupation",r.occupation);
+ put("print-address",r.address);
+ pair("Date of Opening A/c",r.openingDate?new Date(r.openingDate+"T00:00:00").toLocaleDateString("en-GB"):"");
+ pair("Nomination Registered",r.nomination);
+ put("print-date",r.recordDate?new Date(r.recordDate+"T00:00:00").toLocaleDateString("en-GB"):"");
  window.print();
 }
 </script></body></html>
