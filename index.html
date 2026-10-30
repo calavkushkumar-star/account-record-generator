@@ -17,7 +17,6 @@
 <section id="appPanel" class="hidden">
 <div class="panel"><h2>Enter account details</h2><form id="recordForm"><div class="grid">
 <div class="field"><label>Account holder name</label><input id="holder" required maxlength="100"></div>
-<div class="field"><label>Bank / Institution name</label><input id="bank" maxlength="100"></div>
 <div class="field"><label>Account number</label><input id="account" maxlength="40" inputmode="numeric"></div>
 <div class="field"><label>IFSC / Routing code</label><input id="ifsc" maxlength="30"></div>
 <div class="field"><label>Branch</label><input id="branch" maxlength="100"></div>
@@ -40,7 +39,7 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["holder","bank","account","ifsc","branch","branchAddress","type","customerId","relationName","identityNo","mobile","address","recordDate"];
+const fields=["holder","account","ifsc","branch","branchAddress","type","customerId","relationName","identityNo","mobile","address","recordDate"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
 function formData(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}
 function fillForm(r={},id=""){fields.forEach(k=>$(k).value=r[k]||"");$("recordId").value=id;}
@@ -63,7 +62,7 @@ function printRecord(r){
  add(left,"print-branch",r.branch);add(left,"print-branch-address",r.branchAddress);
  add(right,"print-country","");add(right,"print-type",r.type?("(" + r.type.toUpperCase() + " ACCOUNT)"):"");
  top.append(left,right);area.append(top);
- pair("Institution",r.bank);pair("IFSC Code",r.ifsc);
+ pair("IFSC Code",r.ifsc);
  put("print-account",r.account);
  pair("Account holder",r.holder);
  const details=document.createElement("div");details.className="print-details";
