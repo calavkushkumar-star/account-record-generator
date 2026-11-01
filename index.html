@@ -4,8 +4,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Account Record Generator</title>
 <style>
-:root{font-family:Arial,sans-serif;color:#172033;background:#f3f5f9}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1050px;margin:28px auto;padding:0 16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.panel{background:#fff;border:1px solid #e1e6ef;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 4px 18px #1720330a}h1{font-size:24px;margin:0}h2{font-size:18px;margin:0 0 14px}.muted{color:#64748b;font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}.field input,.field select{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:8px;padding:10px 15px;background:#174ea6;color:white;font-weight:600;cursor:pointer}button.secondary{background:#e8edf5;color:#172033}button.danger{background:#b42318}.hidden{display:none!important}.record{padding:12px;border:1px solid #e1e6ef;border-radius:9px;margin:8px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.record button{padding:7px 10px}.status{font-size:13px;color:#166534;margin-top:10px}.error{color:#b42318}.print-area{display:none}
-@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}}
+:root{font-family:Arial,sans-serif;color:#172033;background:#f3f5f9}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1050px;margin:28px auto;padding:0 16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.panel{background:#fff;border:1px solid #e1e6ef;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 4px 18px #1720330a}h1{font-size:24px;margin:0}h2{font-size:18px;margin:0 0 14px}.muted{color:#64748b;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 7px}.form-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:10px;align-items:start}.form-fields{min-width:0}.field label{display:block;font-size:10px;font-weight:500;margin:0 0 1px 2px;line-height:1.1}.field input,.field select{width:100%;height:28px;padding:3px 7px;border:1px solid #b9bdc7;border-radius:3px;font:13px Arial,sans-serif;background:#fff}.form-side{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:8px;align-items:start}.photo-box{height:250px;border:2px solid #c9cbd2;border-radius:4px;display:flex;align-items:center;justify-content:center;background:#f8f9fc;overflow:hidden}.photo-box img{width:100%;height:100%;object-fit:cover}.photo-placeholder{font-size:90px;color:#b8bac2}.side-actions{display:grid;gap:5px}.side-actions button{height:32px;border-radius:3px}.photo-update{grid-column:1/2;background:#d4d4d4!important;color:#222!important;padding:6px!important}.form-bottom{display:grid;grid-template-columns:1fr 265px;gap:10px;align-items:end;margin-top:4px}.form-bottom .actions{margin:0}.form-bottom button{height:38px}.search-box label{display:block;font-size:10px}.search-box input{width:100%;height:28px;padding:4px 8px;border:1px solid #bbb;border-radius:3px}.checks{display:flex;gap:8px;align-items:center;height:28px;font-size:11px;white-space:nowrap}.checks label{display:flex;align-items:center;gap:3px}.checks input{width:auto;height:auto}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:8px;padding:10px 15px;background:#174ea6;color:white;font-weight:600;cursor:pointer}button.secondary{background:#e8edf5;color:#172033}button.danger{background:#b42318}.hidden{display:none!important}.record{padding:12px;border:1px solid #e1e6ef;border-radius:9px;margin:8px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.record button{padding:7px 10px}.status{font-size:13px;color:#166534;margin-top:10px}.error{color:#b42318}.print-area{display:none}
+@media(max-width:950px){.form-shell{grid-template-columns:1fr}.form-side{grid-template-columns:1fr 100px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}.form-bottom{grid-template-columns:1fr}}
 @page{size:A4 landscape;margin:0}
 @media print{
  body{background:#fff}.wrap>*:not(#printArea){display:none!important}
@@ -25,29 +26,50 @@
 <header class="top"><div><h1>Account Record Generator</h1><div class="muted">Create, save and print your personal account information</div></div><button id="logoutBtn" class="secondary hidden">Logout</button></header>
 <section id="authPanel" class="panel"><h2>Login / Create account</h2><div class="grid"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters"></div></div><div class="actions"><button id="loginBtn">Login</button><button id="signupBtn" class="secondary">Create account</button></div><div id="authMsg" class="status"></div></section>
 <section id="appPanel" class="hidden">
-<div class="panel"><h2>Enter account details</h2><form id="recordForm"><div class="grid">
-<div class="field"><label>Title</label><select id="title"><option value="">None</option><option>MR</option><option>MRS</option><option>MS</option></select></div>
-<div class="field"><label>Account holder name</label><input id="holder" required maxlength="100"></div>
-<div class="field"><label>Account number</label><input id="account" maxlength="40" inputmode="numeric"></div>
-<div class="field"><label>IFSC / Routing code</label><input id="ifsc" maxlength="30"></div>
-<div class="field"><label>Branch</label><input id="branch" maxlength="100"></div>
-<div class="field"><label>Branch address</label><input id="branchAddress" maxlength="180"></div>
-<div class="field"><label>Branch Phone No.</label><input id="branchPhone" maxlength="30"></div>
-<div class="field"><label>Issue Date</label><input id="issueDate" type="date"></div>
-<div class="field"><label>Serial No.</label><input id="serialNo" maxlength="30"></div>
-<div class="field"><label>State</label><input id="state" maxlength="60"></div>
-<div class="field"><label>Country</label><input id="country" maxlength="60" value="India"></div>
-<div class="field"><label>Account type</label><select id="type"><option value="">Select</option><option>Savings</option><option>Current</option><option>Other</option></select></div>
-<div class="field"><label>Customer ID</label><input id="customerId" maxlength="40"></div>
-<div class="field"><label>Father / Husband name</label><input id="relationName" maxlength="100"></div>
-<div class="field"><label>Identity number (optional)</label><input id="identityNo" maxlength="40"></div>
-<div class="field"><label>Mobile number</label><input id="mobile" maxlength="20" inputmode="tel"></div>
-<div class="field"><label>Occupation</label><input id="occupation" maxlength="100"></div>
-<div class="field"><label>Address</label><input id="address" maxlength="250"></div>
-<div class="field"><label>Date of Opening A/c</label><input id="openingDate" type="date"></div>
-<div class="field"><label>Nomination Registered</label><select id="nomination"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
-<div class="field"><label>Record date</label><input id="recordDate" type="date"></div>
-</div><div class="actions"><button type="submit">Save record</button><button type="button" id="clearBtn" class="secondary">Clear form</button></div><div id="saveMsg" class="status"></div><input id="recordId" type="hidden"></form></div>
+<div class="panel"><h2>Customer Details</h2><form id="recordForm">
+<div class="form-shell">
+<div class="form-fields"><div class="grid">
+<div class="field"><label>Customer Name *</label><div style="display:flex;gap:3px"><select id="title" style="width:78px;flex-shrink:0"><option value="">Select</option><option>MR</option><option>MRS</option><option>MS</option></select><input id="holder" required maxlength="100" placeholder="Enter Customer Name"></div></div>
+<div class="field"><label>A/c No. *</label><input id="account" required maxlength="40" inputmode="numeric" placeholder="Enter Account Number"></div>
+<div class="field"><label>Opening Date *</label><input id="openingDate" type="date"></div>
+<div class="field"><label>Dob</label><input id="dob" type="date"></div>
+<div class="field"><label>Confirm A/c No. *</label><input id="confirmAccount" maxlength="40" inputmode="numeric" placeholder="Confirm Account Number"></div>
+<div class="field"><label>Issue Date *</label><input id="issueDate" type="date"></div>
+<div class="field"><label>Guardian Name</label><div style="display:flex;gap:3px"><select id="guardianTitle" style="width:78px;flex-shrink:0"><option value="">Select</option><option>MR</option><option>MRS</option><option>MS</option></select><input id="relationName" maxlength="100" placeholder="Enter Guardian Name"></div></div>
+<div class="field"><label>Cif/Customer ID</label><input id="customerId" maxlength="40" placeholder="Enter Cif/Customer ID"></div>
+<div class="field"><label>Sr No. *</label><select id="serialNo"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+<div class="field"><label>Address1 *</label><input id="address1" maxlength="150" placeholder="Enter Village"></div>
+<div class="field"><label>Ckyc No.</label><input id="ckycNo" maxlength="40" placeholder="Enter CKYC Number"></div>
+<div class="field"><label>Occupation *</label><select id="occupation"><option value="">Select Occupation</option><option>EMPLOYED</option><option>SELF EMPLOYED</option><option>BUSINESS</option><option>STUDENT</option><option>UNEMPLOYED</option><option>OTHER</option></select></div>
+<div class="field"><label>Village Code</label><input id="villageCode" maxlength="30" placeholder="Enter Village Code"></div>
+<div class="field"><label>Account Type *</label><select id="type"><option value="">Select</option><option value="BASIC SAVINGS BK DEP A/C">BASIC SAVINGS BK DEP A/C</option><option>SAVINGS</option><option>CURRENT</option><option>OTHER</option></select></div>
+<div class="field"><label>Initial Deposit</label><input id="initialDeposit" maxlength="30" placeholder="Enter Initial Deposit"></div>
+<div class="field"><label>Address2 *</label><input id="address2" maxlength="150" placeholder="Enter Post"></div>
+<div class="field"><label>Nomination *</label><select id="nomination"><option>REGISTERED</option><option>NOT REGISTERED</option></select></div>
+<div class="field"><label>Passbook Delivery Date</label><input id="passbookDate" type="date"></div>
+<div class="field"><label>District / City *</label><input id="district" maxlength="80" placeholder="Enter District / City"></div>
+<div class="field"><label>Nominee Reg. No.</label><input id="nomineeRegNo" maxlength="40" placeholder="Enter Nominee Reg. No"></div>
+<div class="field"><label>Pan No</label><input id="panNo" maxlength="20" placeholder="Enter PAN Number"></div>
+<div class="field"><label>Pincode *</label><input id="pincode" maxlength="10" inputmode="numeric" placeholder="Enter Pincode"></div>
+<div class="field"><label>Aadhaar No</label><input id="identityNo" maxlength="20" inputmode="numeric" placeholder="Enter Aadhaar No"></div>
+<div class="field"><label>Remarks</label><input id="remarks" maxlength="180" placeholder="Enter Remarks"></div>
+<div class="field"><label>State *</label><select id="state"><option value="">Select State</option><option>BIHAR</option><option>WEST BENGAL</option><option>JHARKHAND</option><option>UTTAR PRADESH</option><option>ASSAM</option><option>OTHER</option></select></div>
+<div class="field"><label>IFSC Code</label><input id="ifsc" maxlength="30" placeholder="Enter IFSC Code"></div>
+<div class="field"><label>Branch</label><input id="branch" maxlength="100" placeholder="Enter Branch"></div>
+<div class="field"><label>Branch Address</label><input id="branchAddress" maxlength="180" placeholder="Enter Branch Address"></div>
+<div class="field"><label>Branch Phone No.</label><input id="branchPhone" maxlength="30" placeholder="Enter Branch Phone No."></div>
+<div class="field"><label>Mobile No</label><input id="mobile" maxlength="20" inputmode="tel" placeholder="Enter Mobile"></div>
+<div class="field"><label>Country</label><input id="country" maxlength="60" value="INDIA"></div>
+<div class="field"><label>Record Date</label><input id="recordDate" type="date"></div>
+<div class="field"><label>Identity No. (other)</label><input id="otherIdentity" maxlength="40"></div>
+<div class="field"><label>Account Holder Address</label><input id="address" maxlength="250" placeholder="Auto-combined address if needed"></div>
+<div class="field"><label>Nominee / Guardian relation</label><input id="nomineeRelation" maxlength="60"></div>
+<div class="field"><label>Scheme</label><div class="checks"><label><input type="checkbox" id="apy"> APY</label><label><input type="checkbox" id="pmsby"> PMSBY</label><label><input type="checkbox" id="pmjjy"> PMJJY</label></div></div>
+</div></div>
+<div class="form-side"><div><div class="photo-box"><span id="photoPlaceholder" class="photo-placeholder">●</span><img id="customerPhoto" class="hidden" alt="Customer photo preview"></div><input id="photoFile" type="file" accept="image/*" class="hidden"><button type="button" id="photoBtn" class="photo-update" style="width:100%;margin-top:5px">Update Customer Photo</button></div><div class="side-actions"><button type="button" id="clearBtn" class="secondary">Clear</button><button type="button" id="printCurrentBtn" class="secondary">Print</button><button type="button" id="deleteCurrentBtn" class="secondary">Delete</button><button type="button" id="settingsBtn" class="secondary">Settings</button></div></div>
+</div>
+<div class="form-bottom"><div class="actions"><button type="submit" style="background:#6812e8;min-width:265px">Save Customer</button></div><div class="search-box"><label for="searchCustomer">Search</label><input id="searchCustomer" placeholder="Search Customer"></div></div>
+<div id="saveMsg" class="status"></div><input id="recordId" type="hidden"></form></div>
 <div class="panel"><h2>Saved records</h2><div id="records"><div class="muted">No records yet.</div></div></div>
 </section><section id="printArea" class="print-area"></section>
 </main>
@@ -58,18 +80,24 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["title","holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate"];
+const fields=["title","holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate","dob","confirmAccount","guardianTitle","address1","address2","district","pincode","ckycNo","initialDeposit","passbookDate","nomineeRegNo","panNo","remarks","villageCode","otherIdentity","nomineeRelation","apy","pmsby","pmjjy"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
-function formData(){return Object.fromEntries(fields.map(k=>[k,$(k).value.trim()]));}
-function fillForm(r={},id=""){fields.forEach(k=>$(k).value=r[k]||"");$("recordId").value=id;}
+function formData(){return Object.fromEntries(fields.map(k=>[k,["apy","pmsby","pmjjy"].includes(k)?$(k).checked:$(k).value.trim()]));}
+function fillForm(r={},id=""){fields.forEach(k=>{if(["apy","pmsby","pmjjy"].includes(k))$(k).checked=!!r[k];else $(k).value=r[k]||"";});$("recordId").value=id;}
 async function loadRecords(){const q=query(collection(db,"users",currentUser.uid,"records"),orderBy("createdAt","desc"));const snap=await getDocs(q);records=snap.docs.map(d=>({id:d.id,...d.data()}));renderRecords();}
-function renderRecords(){const root=$("records");root.replaceChildren();if(!records.length){root.textContent="No records yet.";root.className="muted";return;}root.className="";records.forEach(r=>{const row=document.createElement("div");row.className="record";const info=document.createElement("div");const strong=document.createElement("strong");strong.textContent=r.holder||"Untitled record";const small=document.createElement("div");small.className="muted";small.textContent=[r.bank,r.branch].filter(Boolean).join(" · ");info.append(strong,small);const actions=document.createElement("div");const edit=document.createElement("button");edit.className="secondary";edit.textContent="Edit";edit.onclick=()=>fillForm(r,r.id);const print=document.createElement("button");print.textContent="Print";print.onclick=()=>printRecord(r);const del=document.createElement("button");del.className="danger";del.textContent="Delete";del.onclick=async()=>{if(confirm("Delete this record?")){await deleteDoc(doc(db,"users",currentUser.uid,"records",r.id));await loadRecords();}};actions.append(edit,print,del);row.append(info,actions);root.append(row);});}
+function renderRecords(){const root=$("records");root.replaceChildren();if(!records.length){root.textContent="No records yet.";root.className="muted";return;}root.className="";records.forEach(r=>{const row=document.createElement("div");row.className="record";const info=document.createElement("div");const strong=document.createElement("strong");strong.textContent=r.holder||"Untitled record";const small=document.createElement("div");small.className="muted";small.textContent=[r.account,r.branch,r.mobile].filter(Boolean).join(" · ");info.append(strong,small);const actions=document.createElement("div");const edit=document.createElement("button");edit.className="secondary";edit.textContent="Edit";edit.onclick=()=>fillForm(r,r.id);const print=document.createElement("button");print.textContent="Print";print.onclick=()=>printRecord(r);const del=document.createElement("button");del.className="danger";del.textContent="Delete";del.onclick=async()=>{if(confirm("Delete this record?")){await deleteDoc(doc(db,"users",currentUser.uid,"records",r.id));await loadRecords();}};actions.append(edit,print,del);row.append(info,actions);root.append(row);});}
 $("loginBtn").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("authMsg","Email aur password dono bharein.",true);return;}try{message("authMsg","Logging in...");await signInWithEmailAndPassword(auth,email,password);message("authMsg","Login successful.");}catch(e){const map={"auth/invalid-credential":"Email ya password galat hai.","auth/user-not-found":"Is email ka account nahi mila. Pehle Create account karein.","auth/wrong-password":"Password galat hai.","auth/invalid-email":"Email address sahi nahi hai.","auth/too-many-requests":"Bahut baar koshish hui. Thodi der baad try karein.","auth/unauthorized-domain":"Firebase Authentication mein GitHub Pages domain add karein."};message("authMsg",map[e.code]||e.message,true);}};
 $("signupBtn").onclick=async()=>{const email=$("email").value.trim(),password=$("password").value;if(!email||!password){message("authMsg","Email aur password dono bharein.",true);return;}if(password.length<6){message("authMsg","Password kam se kam 6 characters ka hona chahiye.",true);return;}try{message("authMsg","Creating account...");await createUserWithEmailAndPassword(auth,email,password);message("authMsg","Account created. You are logged in.");}catch(e){const map={"auth/email-already-in-use":"Is email se account pehle se bana hai. Login karein.","auth/invalid-email":"Email address sahi nahi hai.","auth/weak-password":"Password kam se kam 6 characters ka rakhein.","auth/unauthorized-domain":"Firebase Authentication mein GitHub Pages domain add karein."};message("authMsg",map[e.code]||e.message,true);}};
 $("logoutBtn").onclick=()=>signOut(auth);
 onAuthStateChanged(auth,async user=>{currentUser=user;$("authPanel").classList.toggle("hidden",!!user);$("appPanel").classList.toggle("hidden",!user);$("logoutBtn").classList.toggle("hidden",!user);if(user){try{await loadRecords();}catch(e){message("saveMsg","Could not load records. Check Firestore rules and database setup.",true);}}});
 $("recordForm").onsubmit=async e=>{e.preventDefault();if(!currentUser)return;const data=formData();try{const id=$("recordId").value;if(id)await updateDoc(doc(db,"users",currentUser.uid,"records",id),data);else await addDoc(collection(db,"users",currentUser.uid,"records"),{...data,createdAt:serverTimestamp()});fillForm();message("saveMsg","Record saved.");await loadRecords();}catch(err){message("saveMsg",err.message,true);}};
 $("clearBtn").onclick=()=>{fillForm();message("saveMsg","");};
+$("photoBtn").onclick=()=>$("photoFile").click();
+$("photoFile").onchange=()=>{const file=$("photoFile").files[0];if(!file)return;const url=URL.createObjectURL(file);$("customerPhoto").src=url;$("customerPhoto").classList.remove("hidden");$("photoPlaceholder").classList.add("hidden");};
+$("printCurrentBtn").onclick=()=>{const data=formData();if(!data.holder){message("saveMsg","Customer Name enter karein.",true);return;}printRecord(data);};
+$("deleteCurrentBtn").onclick=async()=>{const id=$("recordId").value;if(!id||!currentUser){message("saveMsg","Delete karne ke liye saved customer select karein.",true);return;}if(confirm("Delete this customer record?")){await deleteDoc(doc(db,"users",currentUser.uid,"records",id));fillForm();await loadRecords();message("saveMsg","Customer deleted.");}};
+$("settingsBtn").onclick=()=>alert("Settings: customer records are saved securely under your signed-in account.");
+$("searchCustomer").oninput=()=>{const term=$("searchCustomer").value.trim().toLowerCase();document.querySelectorAll("#records .record").forEach(row=>{row.style.display=row.textContent.toLowerCase().includes(term)?"flex":"none";});};
 function printRecord(r){
  const area=$("printArea");area.replaceChildren();
  const layout=document.createElement("div");layout.className="print-layout";
