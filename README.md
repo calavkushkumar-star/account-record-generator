@@ -1,18 +1,19 @@
-# Account Record Generator
+# Account Record Generator — Windows app
 
-A static Firebase web app for creating, saving, editing, and printing personal account information.
+This repository includes a Windows desktop wrapper for the hosted Account Record Generator website.
 
-## Setup
-1. In Firebase Console, open project `account-record-generator`.
-2. In Authentication > Sign-in method, enable **Email/Password**.
-3. In Firestore Database, create a database.
-4. Publish the contents of `firestore.rules` in Firestore Rules.
-5. In GitHub, open Settings > Pages, choose **Deploy from a branch**, select the default branch and `/(root)`, then Save.
+## Build the Windows installer
+1. Open the repository's Actions tab.
+2. Select Build Windows Application.
+3. Click Run workflow on the main branch.
+4. When the run completes, download the Account-Record-Generator-Windows artifact.
+5. Extract the ZIP and run the EXE installer.
 
-The site uses Firebase Web SDK configuration in `index.html`. The web config is intended for client-side use; database access is restricted by the Firestore rules to each signed-in user's own records.
+The app opens the hosted website, so an internet connection is required. Firebase Authentication continues to use the GitHub Pages domain.
 
-## Print
-The print layout is landscape, compact, and positioned at the right side of the page. Only entered fields are printed.
+## Local development
+Run `npm install`, then `npm start`.
 
-## Privacy
-Account information can be sensitive. Use a strong password, do not share your login, and do not enter PINs, passwords, OTPs, CVV, or other authentication secrets.
+## Notes
+- This is a desktop wrapper, not an offline version.
+- Do not put Firebase Admin SDK service-account keys in this repository.
