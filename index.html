@@ -7,7 +7,7 @@
 :root{font-family:Arial,sans-serif;color:#172033;background:#f3f5f9}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1050px;margin:28px auto;padding:0 16px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.panel{background:#fff;border:1px solid #e1e6ef;border-radius:14px;padding:20px;margin:16px 0;box-shadow:0 4px 18px #1720330a}h1{font-size:24px;margin:0}h2{font-size:18px;margin:0 0 14px}.muted{color:#64748b;font-size:13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 7px}.form-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:10px;align-items:start}.form-fields{min-width:0}.field label{display:block;font-size:10px;font-weight:500;margin:0 0 1px 2px;line-height:1.1}.field input,.field select{width:100%;height:28px;padding:3px 7px;border:1px solid #b9bdc7;border-radius:3px;font:13px Arial,sans-serif;background:#fff}.form-side{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:8px;align-items:start}.photo-box{height:250px;border:2px solid #c9cbd2;border-radius:4px;display:flex;align-items:center;justify-content:center;background:#f8f9fc;overflow:hidden}.photo-box img{width:100%;height:100%;object-fit:cover}.photo-placeholder{font-size:90px;color:#b8bac2}.side-actions{display:grid;gap:5px}.side-actions button{height:32px;border-radius:3px}.photo-update{grid-column:1/2;background:#d4d4d4!important;color:#222!important;padding:6px!important}.form-bottom{display:grid;grid-template-columns:1fr 265px;gap:10px;align-items:end;margin-top:4px}.form-bottom .actions{margin:0}.form-bottom button{height:38px}.search-box label{display:block;font-size:10px}.search-box input{width:100%;height:28px;padding:4px 8px;border:1px solid #bbb;border-radius:3px}.checks{display:flex;gap:8px;align-items:center;height:28px;font-size:11px;white-space:nowrap}.checks label{display:flex;align-items:center;gap:3px}.checks input{width:auto;height:auto}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:8px;padding:10px 15px;background:#174ea6;color:white;font-weight:600;cursor:pointer}button.secondary{background:#e8edf5;color:#172033}button.danger{background:#b42318}.hidden{display:none!important}.record{padding:12px;border:1px solid #e1e6ef;border-radius:9px;margin:8px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.record button{padding:7px 10px}.status{font-size:13px;color:#166534;margin-top:10px}.error{color:#b42318}.print-area{display:none}
 @media(max-width:950px){.form-shell{grid-template-columns:1fr}.form-side{grid-template-columns:1fr 100px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:16px auto}.panel{padding:15px}.form-bottom{grid-template-columns:1fr}}
-@page{size:A4 landscape;margin:0}
+@page{size:224mm 140mm;margin:0}
 .print-area{display:none}
 #printArea.preview-open{display:block;position:fixed;inset:12px;z-index:9999;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;box-shadow:0 10px 40px #0003;overflow:auto}
 .print-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
@@ -15,32 +15,30 @@
 .print-tab.active{background:#6812e8;color:#fff}
 .print-now{background:#6812e8;margin-left:auto}
 .print-close{background:#e5e7eb;color:#172033}
-.preview-sheet{position:relative;width:277mm;height:185mm;min-height:420px;margin:0 auto;border:1px solid #cbd5e1;background:#fff;color:#111;font:10pt "Courier New",monospace;overflow:hidden}
-.print-layout{position:relative;width:277mm;height:185mm;background:#fff;color:#111;font:10pt "Courier New",monospace}
-.p-value{position:absolute;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.15;font-size:9.5pt;letter-spacing:0}
-/* Personal customer-record layout: fixed columns and measured vertical spacing */
+.preview-sheet{position:relative;width:224mm;height:140mm;min-height:0;margin:0 auto;border:1px solid #cbd5e1;background:#fff;color:#111;font:9.5pt "Courier New",monospace;overflow:hidden}
+.print-layout{position:relative;width:224mm;height:140mm;background:#fff;color:#111;font:9.5pt "Courier New",monospace}
+.p-value{position:absolute;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.08;font-size:9pt;letter-spacing:0}
 .print1 .p1-phone{left:6%;top:4%}.print1 .p1-branch{left:72%;top:4%}
-.print1 .p1-account{left:12%;top:15%}.print1 .p1-holder{left:32%;top:15%}
-.print1 .p1-type{left:12%;top:27%}.print1 .p1-customer{left:6%;top:39%}
-.print1 .p1-village{left:6%;top:48%}.print1 .p1-micr{left:6%;top:57%}.print1 .p1-ifsc{left:6%;top:63%}
+.print1 .p1-account{left:12%;top:13%}.print1 .p1-holder{left:32%;top:13%}
+.print1 .p1-type{left:12%;top:22%}.print1 .p1-customer{left:6%;top:31%}
+.print1 .p1-village{left:6%;top:40%}.print1 .p1-micr{left:6%;top:49%}.print1 .p1-ifsc{left:6%;top:56%}
 .print2 .p2-branch{left:6%;top:4%}.print2 .p2-branch-address{left:6%;top:8%;width:43%}
 .print2 .p2-issue{left:66%;top:4%}.print2 .p2-serial{left:66%;top:8%}
-.print2 .p2-state{left:55%;top:14%}.print2 .p2-country{left:76%;top:14%}.print2 .p2-ifsc{left:55%;top:20%}.print2 .p2-ckyc{left:55%;top:24%}
-.print2 .p2-account{left:6%;top:34%}.print2 .p2-type{left:6%;top:38%}.print2 .p2-holder{left:6%;top:43%}
-.print2 .p2-occupation{left:6%;top:57%}.print2 .p2-relation{left:6%;top:62%}.print2 .p2-address{left:6%;top:67%;width:39%}
-.print2 .p2-city{left:51%;top:67%;width:27%}.print2 .p2-pin{left:51%;top:73%}.print2 .p2-date{left:6%;top:78%}
-.print2 .p2-phone{left:43%;top:84%}.print2 .p2-nominee{left:43%;top:88%}
+.print2 .p2-state{left:55%;top:13%}.print2 .p2-country{left:76%;top:13%}.print2 .p2-ifsc{left:55%;top:18%}.print2 .p2-ckyc{left:55%;top:22%}
+.print2 .p2-account{left:6%;top:29%}.print2 .p2-type{left:6%;top:33%}.print2 .p2-holder{left:6%;top:37%}
+.print2 .p2-occupation{left:6%;top:47%}.print2 .p2-relation{left:6%;top:52%}.print2 .p2-address{left:6%;top:57%;width:39%}
+.print2 .p2-city{left:51%;top:57%;width:27%}.print2 .p2-pin{left:51%;top:62%}.print2 .p2-date{left:6%;top:66%}
+.print2 .p2-phone{left:43%;top:71%}.print2 .p2-nominee{left:43%;top:75%}
 @media(max-width:950px){.preview-sheet{transform-origin:top left}}
 @media print{
  body{background:#fff!important;margin:0!important}
  body *{visibility:hidden!important}
  #printArea,#printArea .preview-sheet,#printArea .print-layout,#printArea .p-value{visibility:visible!important}
- #printArea{display:block!important;position:fixed!important;inset:0!important;width:297mm!important;height:210mm!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;overflow:hidden!important;background:#fff!important}
+ #printArea{display:block!important;position:fixed!important;inset:0!important;width:224mm!important;height:140mm!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;overflow:hidden!important;background:#fff!important}
  .print-toolbar{display:none!important}
- .preview-sheet{display:block!important;width:297mm!important;height:210mm!important;min-height:0!important;margin:0!important;border:0!important;overflow:hidden!important}
- .print-layout{width:277mm!important;height:185mm!important;margin:12mm 10mm!important}
- .p-value{font:9.5pt "Courier New",monospace!important;line-height:1.2!important;letter-spacing:0!important}
- .p-value{max-width:90%;overflow-wrap:anywhere}
+ .preview-sheet{display:block!important;width:224mm!important;height:140mm!important;min-height:0!important;margin:0!important;border:0!important;overflow:hidden!important}
+ .print-layout{width:224mm!important;height:140mm!important;margin:0!important}
+ .p-value{font:9.5pt "Courier New",monospace!important;line-height:1.15!important;letter-spacing:0!important}
 }</style></head>
 <body><main class="wrap">
 <header class="top"><div><h1>Account Record Generator</h1><div class="muted">Create, save and print your personal account information</div></div><button id="logoutBtn" class="secondary hidden">Logout</button></header>
@@ -127,7 +125,6 @@ function printRecord(r){
  const makePage=page=>{
   const sheet=document.createElement("div");sheet.className="preview-sheet";
   const layout=document.createElement("div");layout.className="print-layout "+(page===1?"print1":"print2");
-  const label=document.createElement("div");label.textContent="CUSTOMER RECORD";label.style.cssText="position:absolute;right:3%;bottom:2%;font:8pt Arial,sans-serif;color:#555;letter-spacing:.4px";layout.append(label);
   const add=(cls,value)=>{if(!val(value))return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
   if(page===1){
    add("p1-phone",r.mobile?"Phone No   "+val(r.mobile):"");
