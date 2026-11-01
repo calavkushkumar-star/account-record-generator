@@ -18,19 +18,18 @@
 .preview-sheet{position:relative;width:277mm;height:185mm;min-height:420px;margin:0 auto;border:1px solid #cbd5e1;background:#fff;color:#111;font:10pt "Courier New",monospace;overflow:hidden}
 .print-layout{position:relative;width:277mm;height:185mm;background:#fff;color:#111;font:10pt "Courier New",monospace}
 .p-value{position:absolute;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.15;font-size:9.5pt;letter-spacing:0}
-/* Print 1: consistent row spacing and aligned columns */
+/* Personal customer-record layout: fixed columns and measured vertical spacing */
 .print1 .p1-phone{left:6%;top:4%}.print1 .p1-branch{left:72%;top:4%}
 .print1 .p1-account{left:12%;top:15%}.print1 .p1-holder{left:32%;top:15%}
 .print1 .p1-type{left:12%;top:27%}.print1 .p1-customer{left:6%;top:39%}
 .print1 .p1-village{left:6%;top:48%}.print1 .p1-micr{left:6%;top:57%}.print1 .p1-ifsc{left:6%;top:63%}
-/* Print 2: paired left/right columns with even vertical rhythm */
 .print2 .p2-branch{left:6%;top:4%}.print2 .p2-branch-address{left:6%;top:8%;width:43%}
 .print2 .p2-issue{left:66%;top:4%}.print2 .p2-serial{left:66%;top:8%}
-.print2 .p2-state{left:55%;top:14%}.print2 .p2-country{left:76%;top:14%}.print2 .p2-ifsc{left:55%;top:19%}.print2 .p2-ckyc{left:55%;top:23%}
-.print2 .p2-account{left:6%;top:32%}.print2 .p2-type{left:6%;top:36%}.print2 .p2-holder{left:6%;top:40%}
-.print2 .p2-occupation{left:6%;top:53%}.print2 .p2-relation{left:6%;top:57%}.print2 .p2-address{left:6%;top:62%;width:39%}
-.print2 .p2-city{left:51%;top:62%;width:27%}.print2 .p2-pin{left:51%;top:68%}.print2 .p2-date{left:6%;top:73%}
-.print2 .p2-phone{left:43%;top:79%}.print2 .p2-nominee{left:43%;top:83%}
+.print2 .p2-state{left:55%;top:14%}.print2 .p2-country{left:76%;top:14%}.print2 .p2-ifsc{left:55%;top:20%}.print2 .p2-ckyc{left:55%;top:24%}
+.print2 .p2-account{left:6%;top:34%}.print2 .p2-type{left:6%;top:38%}.print2 .p2-holder{left:6%;top:43%}
+.print2 .p2-occupation{left:6%;top:57%}.print2 .p2-relation{left:6%;top:62%}.print2 .p2-address{left:6%;top:67%;width:39%}
+.print2 .p2-city{left:51%;top:67%;width:27%}.print2 .p2-pin{left:51%;top:73%}.print2 .p2-date{left:6%;top:78%}
+.print2 .p2-phone{left:43%;top:84%}.print2 .p2-nominee{left:43%;top:88%}
 @media(max-width:950px){.preview-sheet{transform-origin:top left}}
 @media print{
  body{background:#fff!important;margin:0!important}
@@ -128,6 +127,7 @@ function printRecord(r){
  const makePage=page=>{
   const sheet=document.createElement("div");sheet.className="preview-sheet";
   const layout=document.createElement("div");layout.className="print-layout "+(page===1?"print1":"print2");
+  const label=document.createElement("div");label.textContent="CUSTOMER RECORD";label.style.cssText="position:absolute;right:3%;bottom:2%;font:8pt Arial,sans-serif;color:#555;letter-spacing:.4px";layout.append(label);
   const add=(cls,value)=>{if(!val(value))return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
   if(page===1){
    add("p1-phone",r.mobile?"Phone No   "+val(r.mobile):"");
