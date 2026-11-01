@@ -21,14 +21,17 @@
 /* Print 1: align content to the supplied preview as a compact personal record */
 /* Print 1 compact personal-record layout: positions follow the supplied page structure */
 .print1 .p1-phone{left:2.2%;top:4.8%;width:29%}
-.print1 .p1-branch{left:72.7%;top:4.8%;width:25%}
+.print1 .p1-care{left:37%;top:4.8%;width:31%}
+.print1 .p1-branch{left:75%;top:4.8%;width:23%}
 .print1 .p1-account{left:12.5%;top:14.7%;width:22%}
 .print1 .p1-holder{left:21.5%;top:14.7%;width:42%}
 .print1 .p1-type{left:28%;top:39.5%;width:52%}
-.print1 .p1-customer{left:5.2%;top:45.5%;width:42%}
-.print1 .p1-village{left:5.2%;top:50.5%;width:42%}
-.print1 .p1-micr{left:5.2%;top:55.5%;width:42%}
-.print1 .p1-ifsc{left:5.2%;top:59%;width:42%}
+.print1 .p1-customer{left:5.2%;top:39%;width:42%}
+.print1 .p1-village{left:5.2%;top:44%;width:42%}
+.print1 .p1-micr{left:5.2%;top:49%;width:42%}
+.print1 .p1-ifsc{left:5.2%;top:52.5%;width:42%}
+.print1 .p1-web{left:64%;top:39%;width:34%}
+.print1 .p1-missed{left:64%;top:44%;width:34%}
 .print2 .p2-branch{left:6%;top:4%}.print2 .p2-branch-address{left:6%;top:8%;width:43%}
 .print2 .p2-issue{left:66%;top:4%}.print2 .p2-serial{left:66%;top:8%}
 .print2 .p2-state{left:55%;top:13%}.print2 .p2-country{left:76%;top:13%}.print2 .p2-ifsc{left:55%;top:18%}.print2 .p2-ckyc{left:55%;top:22%}
@@ -83,6 +86,9 @@
 <div class="field"><label>Branch</label><input id="branch" maxlength="100" placeholder="Enter Branch"></div>
 <div class="field"><label>Branch Address</label><input id="branchAddress" maxlength="180" placeholder="Enter Branch Address"></div>
 <div class="field"><label>Branch Phone No.</label><input id="branchPhone" maxlength="30" placeholder="Enter Branch Phone No."></div>
+<div class="field"><label>Customer Care Reference No.</label><input id="customerCareNo" maxlength="30" placeholder="Enter reference contact number"></div>
+<div class="field"><label>Online Service Website</label><input id="onlineWebsite" maxlength="120" placeholder="Enter website"></div>
+<div class="field"><label>Missed-call Reference No.</label><input id="missedCallNo" maxlength="30" placeholder="Enter reference number"></div>
 <div class="field"><label>Mobile No</label><input id="mobile" maxlength="20" inputmode="tel" placeholder="Enter Mobile"></div>
 <div class="field"><label>Country</label><input id="country" maxlength="60" value="INDIA"></div>
 <div class="field"><label>Record Date</label><input id="recordDate" type="date"></div>
@@ -105,7 +111,7 @@ import { getFirestore, collection, addDoc, doc, getDocs, updateDoc, deleteDoc, q
 const firebaseConfig={apiKey:"AIzaSyDqM1axs_592SWfv8g3_FChuU71DN5tFRA",authDomain:"account-record-generator.firebaseapp.com",projectId:"account-record-generator",storageBucket:"account-record-generator.firebasestorage.app",messagingSenderId:"496737397971",appId:"1:496737397971:web:5e95f8a0a77b174d52b826",measurementId:"G-02GLGL864N"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id);let currentUser=null,records=[];
-const fields=["title","holder","account","ifsc","branch","branchAddress","branchPhone","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate","dob","confirmAccount","guardianTitle","address1","address2","district","pincode","ckycNo","initialDeposit","passbookDate","nomineeRegNo","panNo","remarks","villageCode","otherIdentity","nomineeRelation","apy","pmsby","pmjjy"];
+const fields=["title","holder","account","ifsc","branch","branchAddress","branchPhone","customerCareNo","onlineWebsite","missedCallNo","issueDate","serialNo","state","country","type","customerId","relationName","identityNo","mobile","occupation","address","openingDate","nomination","recordDate","dob","confirmAccount","guardianTitle","address1","address2","district","pincode","ckycNo","initialDeposit","passbookDate","nomineeRegNo","panNo","remarks","villageCode","otherIdentity","nomineeRelation","apy","pmsby","pmjjy"];
 function message(id,text,error=false){$(id).textContent=text;$(id).className=error?"status error":"status"}
 function formData(){return Object.fromEntries(fields.map(k=>[k,["apy","pmsby","pmjjy"].includes(k)?$(k).checked:$(k).value.trim()]));}
 function fillForm(r={},id=""){fields.forEach(k=>{if(["apy","pmsby","pmjjy"].includes(k))$(k).checked=!!r[k];else $(k).value=r[k]||"";});$("recordId").value=id;}
@@ -134,14 +140,17 @@ function printRecord(r){
   const layout=document.createElement("div");layout.className="print-layout "+(page===1?"print1":"print2");
   const add=(cls,value)=>{if(!val(value))return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
   if(page===1){
-   add("p1-phone",r.branchPhone?"Phone No   "+val(r.branchPhone):(r.mobile?"Phone No   "+val(r.mobile):""));
+   add("p1-phone",r.mobile?"Phone No  "+val(r.mobile):"");
+   add("p1-care",r.customerCareNo?"Customer Care No  "+val(r.customerCareNo):"");
    add("p1-branch",r.branch);
    add("p1-account",r.account);
    add("p1-holder",(r.title?val(r.title)+"   ":"")+val(r.holder));
    add("p1-type",r.type?"("+val(r.type)+")":"");
-   add("p1-customer",r.customerId?"Customer ID   :   "+val(r.customerId):"");
-   add("p1-village",r.address1?"Address/Village   :   "+val(r.address1):"");
-   add("p1-micr",r.villageCode?"Village Code   :   "+val(r.villageCode):"");
+   add("p1-customer",r.customerId?"Cust Id   : "+val(r.customerId):"");
+   add("p1-village","Village   : "+val(r.address1));
+   add("p1-micr",r.micrCode?"MICR Code : "+val(r.micrCode):"");
+   add("p1-web",r.onlineWebsite);
+   add("p1-missed",r.missedCallNo?"Missed Call Balance Mob No: "+val(r.missedCallNo):"");
    add("p1-ifsc",r.ifsc?"IFSC Code   :   "+val(r.ifsc):"");
   }else{
    add("p2-branch",r.branch);add("p2-branch-address",r.branchAddress);
