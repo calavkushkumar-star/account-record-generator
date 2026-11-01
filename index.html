@@ -19,10 +19,16 @@
 .print-layout{position:relative;width:224mm;height:140mm;background:#fff;color:#111;font:9.5pt "Courier New",monospace}
 .p-value{position:absolute;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.08;font-size:9pt;letter-spacing:0}
 /* Print 1: align content to the supplied preview as a compact personal record */
-.print1 .p1-phone{left:2.2%;top:4.8%}.print1 .p1-branch{left:72.7%;top:4.8%}
-.print1 .p1-account{left:14.7%;top:14.7%}.print1 .p1-holder{left:24%;top:14.7%}
-.print1 .p1-type{left:17.3%;top:29.3%}.print1 .p1-customer{left:5.5%;top:34.4%}
-.print1 .p1-village{left:5.5%;top:39.3%}.print1 .p1-micr{left:5.5%;top:44.2%}.print1 .p1-ifsc{left:5.5%;top:46.5%}
+/* Print 1 compact personal-record layout: positions follow the supplied page structure */
+.print1 .p1-phone{left:2.2%;top:4.8%;width:29%}
+.print1 .p1-branch{left:72.7%;top:4.8%;width:25%}
+.print1 .p1-account{left:12.5%;top:14.7%;width:22%}
+.print1 .p1-holder{left:21.5%;top:14.7%;width:42%}
+.print1 .p1-type{left:28%;top:39.5%;width:52%}
+.print1 .p1-customer{left:5.2%;top:45.5%;width:42%}
+.print1 .p1-village{left:5.2%;top:50.5%;width:42%}
+.print1 .p1-micr{left:5.2%;top:55.5%;width:42%}
+.print1 .p1-ifsc{left:5.2%;top:59%;width:42%}
 .print2 .p2-branch{left:6%;top:4%}.print2 .p2-branch-address{left:6%;top:8%;width:43%}
 .print2 .p2-issue{left:66%;top:4%}.print2 .p2-serial{left:66%;top:8%}
 .print2 .p2-state{left:55%;top:13%}.print2 .p2-country{left:76%;top:13%}.print2 .p2-ifsc{left:55%;top:18%}.print2 .p2-ckyc{left:55%;top:22%}
@@ -39,7 +45,7 @@
  .print-toolbar{display:none!important}
  .preview-sheet{display:block!important;width:224mm!important;height:140mm!important;min-height:0!important;margin:0!important;border:0!important;overflow:hidden!important}
  .print-layout{width:224mm!important;height:140mm!important;margin:0!important}
- .p-value{font:9.5pt "Courier New",monospace!important;line-height:1.15!important;letter-spacing:0!important}
+ .p-value{font:9pt "Courier New",monospace!important;line-height:1.08!important;letter-spacing:0!important}
 }</style></head>
 <body><main class="wrap">
 <header class="top"><div><h1>Account Record Generator</h1><div class="muted">Create, save and print your personal account information</div></div><button id="logoutBtn" class="secondary hidden">Logout</button></header>
@@ -128,7 +134,7 @@ function printRecord(r){
   const layout=document.createElement("div");layout.className="print-layout "+(page===1?"print1":"print2");
   const add=(cls,value)=>{if(!val(value))return;const el=document.createElement("div");el.className="p-value "+cls;el.textContent=value;layout.append(el);};
   if(page===1){
-   add("p1-phone",r.mobile?"Phone No   "+val(r.mobile):"");
+   add("p1-phone",r.branchPhone?"Phone No   "+val(r.branchPhone):(r.mobile?"Phone No   "+val(r.mobile):""));
    add("p1-branch",r.branch);
    add("p1-account",r.account);
    add("p1-holder",(r.title?val(r.title)+"   ":"")+val(r.holder));
